@@ -33,7 +33,7 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
     - Save the token in a safe place
     - To use the access token from your Docker CLI client(at the password prompt use the access token as the password)
         ```bash
-        docker login -u <username>
+        $ docker login -u <username>
         ```
 
 ### GitHub Project Configuration
@@ -60,7 +60,7 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
     https://docs.docker.com/engine/install/linux-postinstall/
 - Clone the GitHub repository
     ```bash
-    git clone git@github.com:FlashDrag/recipe-app-api.git <path_to_local_dir>
+    $ git clone git@github.com:FlashDrag/recipe-app-api.git <path_to_local_dir>
     ```
 
 ### Project Setup
@@ -137,8 +137,36 @@ app/*/*/*/__pycache__/
 venv/
 ```
 - Create an empty `app` folder
-- Build the docker image
+- Build the docker image (optionally, as we're going to use docker-compose)
+    ```bash
+    $ sudo service docker start
+    $ docker build .
+    ```
+- Create docker-compose.yml file and add the following:
 ```bash
-sudo service docker start
-docker build .
+# version of docker-compose syntax
+version: '3.9'
+
+# define services
+services:
+  # name of the service
+  app:
+    build:
+      # path to the Dockerfile
+      context: .
+    # port mapping. Maps port 8000 on the host to port 8000 on the container
+    ports:
+      - '8000:8000'
+    # volumes to mount. Mounts the app directory on the host to the /app directory on the container.
+    # Allows to reflect changes made on the host in the container without having to rebuild the container.
+    volumes:
+      - ./app:/app
+    # command to run when the container starts
+    command: >
+      sh -c 'python manage.py runserver 0.0.0.0:8000'
 ```
+- Build the docker image and run the container
+    ```bash
+    $ docker compose build
+    $ docker compose up
+    ```
