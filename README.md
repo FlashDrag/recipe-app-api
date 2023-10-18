@@ -198,7 +198,10 @@ services:
     ```bash
     $ docker compose build
     ```
-
+- Create a Django project
+    ```bash
+    $ docker compose run --rm app sh -c "django-admin startproject app ."
+    ```
 
 
 
