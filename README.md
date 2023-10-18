@@ -8,19 +8,24 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 ### Database
 
 ### Frameworks
-- [Django](https://www.djangoproject.com/)
+- [Django](https://www.djangoproject.com/) - Python web framework
+- [Django REST Framework](https://www.django-rest-framework.org/) - Django toolkit for building web APIs
 
 ### Libraries
 
 
 ### Tools
-- [VS Code](https://code.visualstudio.com/)
-- [PIP](https://pypi.org/project/pip/)
-- [Git](https://git-scm.com/)
-- [GitHub](https://github.com/)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [Docker Hub](https://hub.docker.com/)
+- [VS Code](https://code.visualstudio.com/) - IDE
+- [PIP](https://pypi.org/project/pip/) - Python package manager
+
+- [Git](https://git-scm.com/) - Version control system
+- [GitHub](https://github.com/) - Version control system hosting service
+
+- [Docker](https://www.docker.com/) - Containerization platform
+- [Docker Compose](https://docs.docker.com/compose/) - Tool for defining and running multi-container Docker applications
+- [Docker Hub](https://hub.docker.com/) - Container image registry
+
+- [flake8](https://flake8.pycqa.org/en/latest/) - Python linting tool
 
 
 ## Project Preparation
@@ -69,6 +74,21 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
     Django>=3.2.4,<3.3
     djangorestframework>=3.12.4,<3.13
     ```
+- Create an empty `app` folder
+- Configure linting with flake8
+    - Create `requirements.dev.txt`. Dev requirements are only needed for development and testing in the local environment.
+        ```
+        flake8>=3.9.2,<3.10
+        ```
+    - Create `.flake8` file inside `app` folder and add the following:
+        ```bash
+        [flake8]
+        exclude =
+        migrations,
+        __pycache__,
+        manage.py,
+        settings.py
+        ```
 - Create Dockerfile file and add the following:
 ```bash
 # python image from docker hub
@@ -83,6 +103,8 @@ ENV PYTHONUNBUFFERED 1
 
 # copy requirements.txt from local machine into docker image
 COPY ./requirements.txt /tmp/requirements.txt
+# copy the dev requirements file from local machine into docker image
+COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 # copy the app folder from local machine into docker image
 COPY ./app /app
 # set the working directory.
@@ -92,6 +114,8 @@ WORKDIR /app
 # It allows us to access the port from our web browser
 EXPOSE 8000
 
+# set default environment variable
+ARG DEV=false
 # RUN - is a command to execute when building the image
 # python -m venv /py - creates a virtual environment in the /py directory
 # ... --upgrade pip - upgrades pip
@@ -104,6 +128,9 @@ EXPOSE 8000
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
+    if [ "$DEV" = "true" ] ; \
+        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
+    fi && \
     rm -rf /tmp && \
     adduser \
         --disabled-password \
@@ -136,7 +163,6 @@ app/*/*/*/__pycache__/
 .venv/
 venv/
 ```
-- Create an empty `app` folder
 - Build the docker image (optionally, as we're going to use docker-compose)
     ```bash
     $ sudo service docker start
@@ -154,6 +180,9 @@ services:
     build:
       # path to the Dockerfile
       context: .
+      # override the default environment variable
+      args:
+        - DEV=true
     # port mapping. Maps port 8000 on the host to port 8000 on the container
     ports:
       - '8000:8000'
@@ -165,8 +194,20 @@ services:
     command: >
       sh -c 'python manage.py runserver 0.0.0.0:8000'
 ```
-- Build the docker image and run the container
+- Build the docker image
     ```bash
     $ docker compose build
-    $ docker compose up
+    ```
+
+
+
+
+## Commands
+- Linting
+    ```bash
+    $ docker compose run --rm app sh -c "flake8"
+    ```
+- Test
+    ```bash
+    $ docker compose run --rm app sh -c "python manage.py test"
     ```
