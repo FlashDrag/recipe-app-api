@@ -29,29 +29,6 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 
 
 ## Project Preparation
-### Docker Hub Configuration
-- Docker Hub account
-    https://hub.docker.com/
-- Create New Access Token
-    - Go to https://hub.docker.com/ > Account Settings > Security > New Access Token
-    - Token Description: `recipe-app-api`
-    - Save the token in a safe place
-    - To use the access token from your Docker CLI client(at the password prompt use the access token as the password)
-        ```bash
-        $ docker login -u <username>
-        ```
-
-### GitHub Project Configuration
-- Create a new repository
-- Add Docker Hub secrets to GitHub repository for GitHub Actions jobs
-
-    _Settings > Secrets > Actions > New repository secret_
-
-    - Name: `DOCKERHUB_USER`, Value: `<username>`
-
-    - Name: `DOCKERHUB_TOKEN`, Value: `<access_token>`
-
-
 ## Local Development Environment Setup (Ubuntu 22.04)
 ##### Prerequisites
 - Install Docker Engine
@@ -202,10 +179,12 @@ services:
     ```bash
     $ docker compose run --rm app sh -c "django-admin startproject app ."
     ```
+- Start the Django development server
+    ```bash
+    $ docker compose up
+    ```
 
-
-
-## Commands
+### Useful Commands
 - Linting
     ```bash
     $ docker compose run --rm app sh -c "flake8"
@@ -214,3 +193,71 @@ services:
     ```bash
     $ docker compose run --rm app sh -c "python manage.py test"
     ```
+- Start Docker Daemon
+    ```bash
+    $ sudo service docker start
+    ```
+- Build the docker image from docker-compose.yml file
+    ```bash
+    $ docker compose build
+    ```
+- Build the docker image from Dockerfile
+    ```bash
+    $ docker build .
+    ```
+- Start the Django development server
+    ```bash
+    $ docker compose up
+    ```
+
+## Production Environment Setup
+### Docker Hub Configuration
+DockerHub is a platform that allows us to pull Docker images down to our local machine and push Docker images up to the cloud.
+
+- Docker Hub account
+    https://hub.docker.com/
+- Create New Access Token
+    - Go to https://hub.docker.com/ > Account Settings > Security > New Access Token
+    - Token Description: `recipe-app-api-github-actions`
+    - Access permissions: `read-only`
+    - Don't close token, until you've copied and pasted it into your GitHub repository
+
+    - Warning: Use different tokens for different environments
+    - To use access token from your Docker CLI client(at the password prompt use the access token as the password)
+        ```bash
+        $ docker login -u <username>
+        ```
+
+### GitHub Actions Configuration
+- Create new repo if not exists
+- Add Docker Hub secrets to GitHub repository for GitHub Actions jobs
+
+    _Settings > Secrets > Actions > New repository secret_
+
+    - `DOCKERHUB_USER`: `<username>`
+
+    - `DOCKERHUB_TOKEN`: `<access_token>`
+- Create a config file at `.github/workflows/checks.yml`
+```bash
+---
+name: Checks
+
+on: [push]
+
+jobs:
+  test-lint:
+    name: Test and Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test
+        run: docker compose run --rm app sh -c "python manage.py test"
+      - name: Lint
+        run: docker compose run --rm app sh -c "flake8"
+```
