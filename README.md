@@ -71,7 +71,7 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
     - Dockerfile configuration for dev container development. It allows you to use VSCode extensions inside the container.
 ```bash
 # Debian-based python image
-FROM python:3.9-slim
+FROM python:3.11.6-slim
 
 # Set maintainer label
 LABEL maintainer="linkedin.com/in/pavlo-myskov"
@@ -121,7 +121,7 @@ USER django-user
 ```bash
 # python image from docker hub
 # alpine is an efficient and lightweight linux distro for docker
-FROM python:3.9-alpine3.13
+FROM python:3.11.6-alpine3.18
 
 # maintainer of the image
 LABEL maintainer="linkedin.com/in/pavlo-myskov"
@@ -239,7 +239,7 @@ services:
 
 ### Local Development
 Choose one of the following options:
-#### 1. Dev Container (recommended)
+#### 1. Dev Container
 The Remote - Containers extension lets you use a Docker container as a full-featured development environment. It allows you to use development environments inside containers, and develop the application directly inside the container.
 ##### Setup Dev Containers
 - Install the *Dev Containers* extension in VS Code
@@ -250,7 +250,7 @@ $ touch .devcontainer/devcontainer.json
 ```
 *This file configures how VS Code should interact with your development container.*
 - Add the following configuration to `devcontainer.json` file:
-```bash
+```
 {
     // Name of the development container
     "name": "Django Dev Container",
@@ -268,140 +268,8 @@ $ touch .devcontainer/devcontainer.json
     // VS Settings to apply inside the container
     "customizations": {
         "vscode": {
-            "settings": {
-                "files.autoSave": "afterDelay",
-                "editor.unicodeHighlight.invisibleCharacters": false,
-                "autoDocstring.quoteStyle": "'''",
-                "autoDocstring.docstringFormat": "one-line-sphinx",
-                "autoDocstring.startOnNewLine": true,
-                "pythonPreview.code.fontSize": "12",
-                "pythonPreview.code.lineHeight": 1,
-                "terminal.integrated.mouseWheelScrollSensitivity": 0.1,
-                "workbench.editorAssociations": {
-                    "*.html": "default"
-                },
-                "editor.linkedEditing": true,
-                "files.trimTrailingWhitespace": true,
-                "settingsSync.ignoredSettings": [
-                    "-python.venvPath"
-                ],
-                "workbench.startupEditor": "none",
-                "[html]": {
-                    "editor.defaultFormatter": "vscode.html-language-features",
-                    "editor.tabSize": 2
-                },
-                "todohighlight.isEnable": true,
-                "editor.smoothScrolling": true,
-                "security.workspace.trust.enabled": false,
-                "[css]": {
-                    "editor.defaultFormatter": "esbenp.prettier-vscode",
-                    "editor.tabSize": 2
-                },
-                "todo-tree.highlights.defaultHighlight": {
-                    "icon": "alert",
-                    "type": "text",
-                    "foreground": "#000",
-                    "background": "#ffffff",
-                    "opacity": 80,
-                    "iconColour": "#c4c255",
-                    "gutterIcon": true
-                },
-                "todo-tree.general.tags": [
-                    "TODO",
-                    "FIXME",
-                    "COMPLETE",
-                    "BUG"
-                ],
-                "todo-tree.highlights.customHighlight": {
-                    "TODO": {
-                        "icon": "check",
-                        "foreground": "#ffffff",
-                        "iconColour": "#fbff17",
-                        "type": "text-and-comment",
-                        "background": "#20bc7162",
-                        "opacity": 50,
-                        "borderRadius": "1",
-                        "gutterIcon": true
-                    },
-                    "FIXME": {
-                        "type": "text-and-comment",
-                        "background": "#eb5050b4",
-                        "opacity": 50,
-                        "foreground": "#ffffff",
-                        "iconColour": "#fc5a5a",
-                        "gutterIcon": true
-                    },
-                    "BUG": {
-                        "type": "text-and-comment",
-                        "background": "#725bd5",
-                        "opacity": 50,
-                        "foreground": "#ffffff",
-                        "iconColour": "#2ba4f5",
-                        "gutterIcon": true
-                    }
-                },
-                "[jsonc]": {
-                    "editor.defaultFormatter": "vscode.json-language-features"
-                },
-                "editor.minimap.enabled": false,
-                "[json]": {
-                    "editor.defaultFormatter": "vscode.json-language-features",
-                    "editor.tabSize": 4
-                },
-                "[javascript]": {
-                    "editor.defaultFormatter": "vscode.typescript-language-features",
-                    "editor.tabSize": 4
-                },
-                "editor.indentSize": "tabSize",
-                "workbench.colorTheme": "Atom One Dark",
-                "editor.inlineSuggest.enabled": true,
-                "terminal.integrated.defaultProfile.linux": "bash",
-                "python.terminal.activateEnvironment": true,
-                "[python]": {
-                    "editor.formatOnType": true,
-                    "editor.tabSize": 4,
-                    "editor.defaultFormatter": "ms-python.flake8"
-                },
-                "python.terminal.activateEnvInCurrentTerminal": true,
-                "github.copilot.enable": {
-                    "*": true,
-                    "plaintext": true,
-                    "markdown": true,
-                    "scminput": false,
-                    "yaml": true,
-                    "python": true,
-                    "html": true,
-                    "css": true,
-                    "javascript": true,
-                    "ignore": true,
-                    "github-actions-workflow": false,
-                    "scss": true,
-                    "json": true,
-                    "properties": true,
-                    "dockerfile": true,
-                    "dockercompose": true
-                },
-                "output.smartScroll.enabled": false,
-                "prettier.tabWidth": 2,
-                "explorer.confirmDragAndDrop": false,
-                "[scss]": {
-                    "editor.defaultFormatter": "esbenp.prettier-vscode"
-                },
-                "diffEditor.ignoreTrimWhitespace": false
-            },
-            "extensions": [
-                "ms-python.python",        // Python support
-                "ms-python.flake8",        // Flake8 linter
-                "ms-python.vscode-pylance",// Pylance language server for Python
-                "esbenp.prettier-vscode",  // Code formatter
-                "bradgashler.htmltagwrap", // HTML tag wrapping
-                "GitHub.copilot",          // GitHub Copilot AI assistant
-                "GitHub.copilot-chat",     // Chat interface for Copilot
-                "GitHub.copilot-labs",     // Experimental features for Copilot
-                "Gruntfuggly.todo-tree",   // todo highlighting
-                "Zignd.html-css-class-completion", // HTML/CSS class completion
-                "humao.rest-client"        // REST client
-            ]
+            "settings": {},  // settings.json
+            "extensions": []  // list of vscode extensions to install inside the container
         }
     },
 
@@ -415,6 +283,8 @@ $ touch .devcontainer/devcontainer.json
 - Open the Command Palette (Ctrl+Shift+P) and run the **Remote-Containers: Reopen in Container** command.
 
 #### 2. Local virtual environment
+Since you've mounted your app codebase as a Docker volume you can develop your application directly on your local machine and see the changes reflected in the container without having to rebuild the container.
+##### Setup Local Virtual Environment
 - Create virtual environment using virtualwrapper
     ```bash
     $ mkvirtualenv recipe-app-api
@@ -428,12 +298,7 @@ $ touch .devcontainer/devcontainer.json
     $ pip install -r requirements.dev.txt
     ```
 - All development dependencies you can add to `requirements.dev.txt` file.
-- Since you've mounted your app codebase as a Docker volume you can develop your application directly on your local machine and see the changes reflected in the container without having to rebuild the container.
-
-
-
-
-
+- **Make sure the all dependencies including python version on your local machine match the dependencies in the container to avoid any issues.**
 
 
 ### Useful Commands

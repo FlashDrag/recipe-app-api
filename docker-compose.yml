@@ -6,9 +6,10 @@ services:
       context: .
       args:
         - DEV=true
+    restart: on-failure
     ports:
       - '8000:8000'
     volumes:
-      - ./app:/home/django-user/app
+      - ./app:/app
     command: >
       sh -c 'python manage.py runserver 0.0.0.0:8000'
