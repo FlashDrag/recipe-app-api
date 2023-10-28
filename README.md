@@ -301,48 +301,6 @@ Since you've mounted your app codebase as a Docker volume you can develop your a
 - **Make sure the all dependencies including python version on your local machine match the dependencies in the container to avoid any issues.**
 
 
-### Useful Commands
-- Linting
-    ```bash
-    $ docker compose run --rm app sh -c "flake8"
-    ```
-- Test
-    ```bash
-    $ docker compose run --rm app sh -c "python manage.py test"
-    ```
-- Start Docker Daemon
-    ```bash
-    $ sudo service docker start
-    ```
-- Build the docker image from docker-compose.yml file
-    ```bash
-    $ docker compose build
-    ```
-- Build the docker image from Dockerfile
-    ```bash
-    $ docker build .
-    ```
-- Start the Django development server
-    ```bash
-    $ docker compose up
-    ```
-- Remove old containers
-    ```bash
-    $ docker compose down
-    ```
-- Rebuild the docker image
-    ```bash
-    $ docker compose up --build
-    ```
-- Check images
-    ```bash
-    $ docker images
-    ```
-- Check files in the image
-    ```bash
-    $ docker run -it <image_id> sh
-    ```
-
 ## Production Environment Setup
 ### Docker Hub Configuration
 DockerHub is a platform that allows us to pull Docker images down to our local machine and push Docker images up to the cloud.
