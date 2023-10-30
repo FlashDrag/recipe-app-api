@@ -2,6 +2,8 @@ version: '3.9'
 
 services:
   app:
+    depends_on:
+      - db
     build:
       context: .
       args:
@@ -13,3 +15,22 @@ services:
       - ./app:/app
     command: >
       sh -c 'python manage.py runserver 0.0.0.0:8000'
+    environment:
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=postgres
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+volumes:
+  dev-db-data:

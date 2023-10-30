@@ -45,7 +45,7 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
     $ git clone git@github.com:FlashDrag/recipe-app-api.git <path_to_local_dir>
     ```
 
-### Project Setup
+### Project(Django) Setup
 - Create requirements.txt file and add the following:
     ```
     Django>=3.2.4,<3.3
@@ -216,7 +216,7 @@ services:
     ports:
       - '8000:8000'
     # volumes to mount. Mounts the app directory on the host to the /app directory on the container.
-    # Allows to reflect changes made on the host in the container without having to rebuild the container.
+    # Maps directory in the container to the directory on the local machine
     volumes:
       - ./app:/app
       # `- ./app:/home/django-user/app` - for dev container development
@@ -236,6 +236,91 @@ services:
     ```bash
     $ docker compose up
     ```
+
+### Project(Database) Setup
+#### Configure Docker for PostgreSQL
+- Add PostgreSQL database to docker-compose.yml file
+```bash
+# ...
+services:
+    app:
+        # specifies that the app service depends on the db service
+        # also, it ensures that the db service is started before the app service
+        depends_on:
+            - db
+        # ...
+        # allows to connect to the database from the app service,
+        # must match the credentials in the db service
+        environment:
+            # hostname of the database - the name of the service in docker-compose.yml file
+            - DB_HOST=db
+            - DB_NAME=devdb
+            - DB_USER=devuser
+            - DB_PASS=postgres
+
+    # add db service,
+    # `app` service will use `db` as a hostname to connect to the database
+    db:
+        # docker hub image to use
+        image: postgres:13-alpine
+        volumes:
+            - dev-db-data:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_DB=devdb
+            - POSTGRES_USER=devuser
+            - POSTGRES_PASSWORD=postgres
+        ports:
+        - '5432:5432'
+
+# named volumes
+volumes:
+    dev-db-data:
+    dev-static-data:
+```
+- Run the containers to create the database
+```bash
+    $ docker compose up
+```
+- Add `psycopg2` dependencies to Dockerfile
+```bash
+# ...
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    # install psycopg2 dependencies
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
+    # ...
+    rm -rf /tmp && \
+    # delete the .tmp-build-deps
+    apk del .tmp-build-deps && \
+    # ...
+```
+- Add `psycopg2` package to requirements.txt file
+```
+psycopg2>=2.8.6,>2.9
+```
+#### Configure Django to use PostgreSQL
+- Add database configuration to settings.py file
+```
+# Database
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    }
+}
+```
+- Add database credentials to *.env* file. See the *.env.example* file for reference.
+- Rebuild the docker image
+```bash
+$ docker compose up --build
+```
 
 ### Local Development
 Choose one of the following options:

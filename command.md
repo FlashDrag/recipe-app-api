@@ -27,9 +27,13 @@
     ```bash
     $ docker run -it <image_id> sh
     ```
-- Remove old containers
+- Remove containers
     ```bash
     $ docker compose down
+    ```
+- Remove all images without at least one container associated to them
+    ```bash
+    $ docker image prune
     ```
 
 ## Run commands inside the container
