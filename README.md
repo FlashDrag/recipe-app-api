@@ -301,7 +301,8 @@ services:
 ```bash
 $ docker compose down
 ```
-- Run the containers
+- Run the containers (optionally, for testing)
+It is better to migrate the database after the *CustomUser* model has been created.
 ```bash
 $ docker compose up
 ```
