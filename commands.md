@@ -35,6 +35,14 @@
     ```bash
     $ docker image prune
     ```
+- View all volumes
+```bash
+$ docker volume ls
+```
+- Remove volumes
+```bash
+$ docker volume rm <volume_name>
+```
 
 ## Run commands inside the container
 - Using `docker compose run` command

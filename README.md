@@ -302,9 +302,22 @@ services:
 $ docker compose down
 ```
 - Run the containers (optionally, for testing)
-It is better to migrate the database after the *CustomUser* model has been created.
+It is better first time to migrate the database after the *CustomUser* model has been created.
 ```bash
 $ docker compose up
+```
+#### Create a Custom User Model
+- Create a Custom User Model and a Custom User Manager. See the [file](app/core/models.py) for reference.
+- Add `AUTH_USER_MODEL = 'core.User'` to *settings.py* file
+- Make and apply migrations
+```bash
+$ docker compose run --rm app sh -c "python manage.py makemigrations core"
+$ docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
+```
+- Remove the db volume
+In case, if you applied initial migrations before creating the Custom User Model. It will clean up the database.
+```bash
+$ docker volume rm recipe-app-api_dev-db-data
 ```
 
 ### Local Development
