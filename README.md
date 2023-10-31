@@ -270,7 +270,41 @@ DATABASES = {
 ```bash
 $ docker compose up --build
 ```
-
+##### Setup `wait_for_db` custom management command
+Allows to wait for the database to be available before running the Django app.
+- Create a new *core* app
+```bash
+$ docker compose run --rm app sh -c "python manage.py startapp core"
+```
+- Create a new *management* module with *commands* subdirectory inside *core* app
+```bash
+$ mkdir -p app/core/management/commands && touch app/core/management/__init__.py && touch app/core/management/commands/__init__.py
+```
+- Create a new *wait_for_db.py* file inside *commands* subdirectory
+```bash
+$ touch app/core/management/commands/wait_for_db.py
+```
+- Configure *wait_for_db.py* file. See the [file](app/core/management/commands/wait_for_db.py) for reference.
+- Add *wait_for_db* command to *docker-compose.yml* file
+```
+# ...
+services:
+    app:
+        # ...
+        # command to run when the container starts
+        command: >
+            sh -c "python manage.py wait_for_db &&
+                    python manage.py migrate &&
+                    python manage.py runserver 0.0.0.0:8000"
+```
+- Clean up the containers
+```bash
+$ docker compose down
+```
+- Run the containers
+```bash
+$ docker compose up
+```
 
 ### Local Development
 Choose one of the following options:
