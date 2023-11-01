@@ -12,7 +12,9 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 - [Django REST Framework](https://www.django-rest-framework.org/) - Django toolkit for building web APIs
 
 ### Libraries
-
+- [flake8](https://flake8.pycqa.org/en/latest/) - Python linting tool
+- [psycopg2](https://www.psycopg.org/) - PostgreSQL database adapter for Python
+- [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) - Django REST Framework schema generator
 
 ### Tools
 - [VS Code](https://code.visualstudio.com/) - IDE
@@ -24,8 +26,6 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 - [Docker](https://www.docker.com/) - Containerization platform
 - [Docker Compose](https://docs.docker.com/compose/) - Tool for defining and running multi-container Docker applications
 - [Docker Hub](https://hub.docker.com/) - Container image registry
-
-- [flake8](https://flake8.pycqa.org/en/latest/) - Python linting tool
 
 
 ## Project Preparation
@@ -319,6 +319,30 @@ In case, if you applied initial migrations before creating the Custom User Model
 ```bash
 $ docker volume rm recipe-app-api_dev-db-data
 ```
+#### Configure DRF to use drf_spectacular
+It allows to generate OpenAPI schema for the API.
+- Add `drf_spectacular` package to requirements.txt file
+- Add `rest_framework` and `drf_spectacular` to *INSTALLED_APPS* in *settings.py* file
+- Add `REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',}` to *settings.py* file
+- Add url patterns to *urls.py* file
+```python
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView
+)
+# ...
+
+urlpatterns = [
+    # ...
+    path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
+    path(
+        'api/docs',
+        SpectacularSwaggerView.as_view(url_name='api-schema'),
+        name='api-docs',
+    )
+]
+```
+- Rebuild the docker image
 
 ### Local Development
 Choose one of the following options:
