@@ -22,6 +22,19 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - Swagger UI: `<host>/api/docs/`
 - OpenAPI schema: `<host>/api/schema/`
 
+### Authentication with Token using Swagger UI
+- Create new user or use existing one
+- To get a token, send a `POST` request to `<host>/api/user/token/` with the following payload:
+    ```json
+    {
+        "email": "<user_email>",
+        "password": "<user_password>"
+    }
+    ```
+- Copy the token from the response
+- Click on the *Authorize* button in the top right corner
+- Enter the `Token <token>` in the *Value* field of the *tokenAuth (apiKey)* section
+
 ## Project Requirements
 ### Programming Languages
 - [Python](https://www.python.org/)
