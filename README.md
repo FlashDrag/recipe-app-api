@@ -7,48 +7,20 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 - Token-based authentication
 - User management
     * Create user
-    * Update user
-    * Get user
+    * Update user *(auth required)*
+    * Get user detail *(auth required)*
+
+- Recipe management *(auth required)*
+    * View list of recipes
+    * View detail of specific recipe
+    * Create recipe
+    * Update recipe
+    * Delete recipe
 
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
-- OpenAPI schema: `<host>/api/schema/`
 - Swagger UI: `<host>/api/docs/`
-### User management
-- Create user:
-    - POST `<host>/api/user/create/`
-    - Request body:
-        ```json
-        {
-            "email": "user@example.com",
-            "password": "string",
-            "name": "string"
-        }
-        ```
-- Update user (authenticated):
-    - PATCH `<host>/api/user/me/`
-    - Request body:
-        ```json
-        // at least one of the fields must be provided
-        {
-            "email": "user@example.com",
-            "password": "string",
-            "name": "string"
-        }
-        ```
-- Get user (authenticated):
-    - GET `<host>/api/user/me/`
-
-### Authentication
-- Create token (authenticated user)
-    - POST `<host>/api/user/token/`
-    - Request body:
-        ```json
-        {
-            "email": "user@example.com",
-            "password": "string"
-        }
-        ```
+- OpenAPI schema: `<host>/api/schema/`
 
 ## Project Requirements
 ### Programming Languages
