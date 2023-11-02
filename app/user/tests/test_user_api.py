@@ -155,4 +155,4 @@ class PrivateUserApiTests(TestCase):
         # check user name and password updated correctly
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.name, payload['name'])
-        self.assertTrue(self.user.check_passwrod(payload['password']))
+        self.assertTrue(self.user.check_password(payload['password']))
