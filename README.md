@@ -1,11 +1,58 @@
 # Recipe API
 REST API with Python, Django REST Framework and Docker using Test Driven Development (TDD)
 
+
+## Features
+- Django UI admin panel
+- Token-based authentication
+- User management
+    * Create user
+    * Update user
+    * Get user
+
+## Documentation
+The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
+- OpenAPI schema: `<host>/api/schema/`
+- Swagger UI: `<host>/api/docs/`
+### User management
+- Create user:
+    - POST `<host>/api/user/create/`
+    - Request body:
+        ```json
+        {
+            "email": "user@example.com",
+            "password": "string",
+            "name": "string"
+        }
+        ```
+- Update user (authenticated):
+    - PATCH `<host>/api/user/me/`
+    - Request body:
+        ```json
+        // at least one of the fields must be provided
+        {
+            "email": "user@example.com",
+            "password": "string",
+            "name": "string"
+        }
+        ```
+- Get user (authenticated):
+    - GET `<host>/api/user/me/`
+
+### Authentication
+- Create token (authenticated user)
+    - POST `<host>/api/user/token/`
+    - Request body:
+        ```json
+        {
+            "email": "user@example.com",
+            "password": "string"
+        }
+        ```
+
 ## Project Requirements
 ### Programming Languages
 - [Python](https://www.python.org/)
-
-### Database
 
 ### Frameworks
 - [Django](https://www.djangoproject.com/) - Python web framework
@@ -14,7 +61,7 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 ### Libraries
 - [flake8](https://flake8.pycqa.org/en/latest/) - Python linting tool
 - [psycopg2](https://www.psycopg.org/) - PostgreSQL database adapter for Python
-- [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) - Django REST Framework schema generator
+- [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) - OpenAPI schema generation for Django REST framework
 
 ### Tools
 - [VS Code](https://code.visualstudio.com/) - IDE
