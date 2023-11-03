@@ -21,6 +21,8 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
 - Swagger UI: `<host>/api/docs/`
 - OpenAPI schema: `<host>/api/schema/`
+#### Django UI admin panel
+`<host>/admin/`
 
 ### Authentication with Token using Swagger UI
 - Create new user or use existing one
