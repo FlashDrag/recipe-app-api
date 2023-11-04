@@ -22,10 +22,10 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - Swagger UI: `<host>/api/docs/`
 - ReDoc: `<host>/api/redoc/`
 - OpenAPI schema: `<host>/api/schema/`
-- #### Django UI admin panel
+#### Django UI admin panel
 `<host>/admin/`
 
-- #### Authentication with Token using Swagger UI
+#### Authentication with Token using Swagger UI
 - Create new user or use existing one
 - To get a token, send a `POST` request to `<host>/api/user/token/` with the following payload:
     ```json
