@@ -22,10 +22,10 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - Swagger UI: `<host>/api/docs/`
 - ReDoc: `<host>/api/redoc/`
 - OpenAPI schema: `<host>/api/schema/`
-#### Django UI admin panel
+- #### Django UI admin panel
 `<host>/admin/`
 
-### Authentication with Token using Swagger UI
+- #### Authentication with Token using Swagger UI
 - Create new user or use existing one
 - To get a token, send a `POST` request to `<host>/api/user/token/` with the following payload:
     ```json
@@ -38,7 +38,11 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - Click on the *Authorize* button in the top right corner
 - Enter the `Token <token>` in the *Value* field of the *tokenAuth (apiKey)* section
 
-## Project Requirements
+
+## Entity-Relationship Diagram
+![ERD](docs/erd.png)
+
+## Technologies Used
 ### Programming Languages
 - [Python](https://www.python.org/)
 
@@ -63,7 +67,21 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - [Docker Hub](https://hub.docker.com/) - Container image registry
 
 
-## Project Preparation
+## Local Usage
+- Clone the GitHub repository
+    ```bash
+    $ git clone
+    ```
+- Build the docker image
+    ```bash
+    $ docker compose build
+    ```
+- Run the containers
+    ```bash
+    $ docker compose up
+    ```
+
+## Project Development
 ## Local Development Environment Setup (Ubuntu 22.04)
 ##### Prerequisites
 - Install Docker Engine
