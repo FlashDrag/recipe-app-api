@@ -19,8 +19,12 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
         * Delete recipe
     - Tags API
         * View list of tags
-        * Create tag (accepts multiple tags when creating a recipe)
+        * Create tag
+            - Tag can be created when creating a recipe
+            - Tag can be created when updating a recipe
         * Update tag
+            - Tag can be updated when updating a recipe
+            - Tag can be updated using the Tags API endpoint
         * Delete tag
 
 ## Documentation
