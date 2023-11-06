@@ -31,7 +31,7 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 #### Django UI admin panel
 `<host>/admin/`
 
-#### Authentication with Token using Swagger UI
+#### User authentication with Token
 - Create new user or use existing one
 - To get a token, send a `POST` request to `<host>/api/user/token/` with the following payload:
     ```json
@@ -40,10 +40,13 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
         "password": "<user_password>"
     }
     ```
+##### Swagger UI
 - Copy the token from the response
 - Click on the *Authorize* button in the top right corner
 - Enter the `Token <token>` in the *Value* field of the *tokenAuth (apiKey)* section
-
+##### Frontend App
+- Save the token in the local storage
+- Add the `Authorization: Token <token>` header to the request every time you make a request to the API
 
 ## Entity-Relationship Diagram
 ![ERD](docs/erd.png)
