@@ -11,11 +11,17 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
     * Get user detail *(auth required)*
 
 - Recipe management *(auth required)*
-    * View list of recipes
-    * View detail of specific recipe
-    * Create recipe
-    * Update recipe
-    * Delete recipe
+    - Recipe API
+        * View list of recipes
+        * View detail of specific recipe
+        * Create recipe
+        * Update recipe
+        * Delete recipe
+    - Tags API
+        * View list of tags
+        * Create tag (accepts multiple tags when creating a recipe)
+        * Update tag
+        * Delete tag
 
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
