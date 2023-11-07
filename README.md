@@ -4,6 +4,8 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
 
 ## Features
 - Django UI admin panel
+    ```<host>/admin/```
+
 - Token-based authentication
 - User management
     * Create user
@@ -26,14 +28,21 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
             - Tag can be updated when updating a recipe
             - Tag can be updated using the Tags API endpoint
         * Delete tag
+    - Ingredients API
+        * View list of ingredients
+        * Create ingredient
+            - Ingredient can be created when creating a recipe
+            - Ingredient can be created when updating a recipe
+        * Update ingredient
+            - Ingredient can be updated when updating a recipe
+            - Ingredient can be updated using the Ingredients API endpoint
+        * Delete ingredient
 
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
 - Swagger UI: `<host>/api/docs/`
 - ReDoc: `<host>/api/redoc/`
 - OpenAPI schema: `<host>/api/schema/`
-#### Django UI admin panel
-`<host>/admin/`
 
 #### User authentication with Token
 - Create new user or use existing one
@@ -44,13 +53,13 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
         "password": "<user_password>"
     }
     ```
-##### Swagger UI
-- Copy the token from the response
-- Click on the *Authorize* button in the top right corner
-- Enter the `Token <token>` in the *Value* field of the *tokenAuth (apiKey)* section
-##### Frontend App
-- Save the token in the local storage
-- Add the `Authorization: Token <token>` header to the request every time you make a request to the API
+- ##### Swagger UI
+    - Copy the token from the response
+    - Click on the *Authorize* button in the top right corner
+    - Enter the `Token <token>` in the *Value* field of the *tokenAuth (apiKey)* section
+- ##### Frontend App
+    - Save the token in the local storage
+    - Add the `Authorization: Token <token>` header to the request every time you make a request to the API
 
 ## Entity-Relationship Diagram
 ![ERD](docs/erd.png)
