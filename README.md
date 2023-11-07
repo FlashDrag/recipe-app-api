@@ -21,20 +21,20 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
         * Delete recipe
     - Tags API
         * View list of tags
-        * Create tag
-            - Tag can be created when creating a recipe
-            - Tag can be created when updating a recipe
+        * Create tags
+            - Tags can be created when creating a recipe
+            - Tags can be created when updating a recipe
         * Update tag
-            - Tag can be updated when updating a recipe
+            - Tags can be updated when updating a recipe
             - Tag can be updated using the Tags API endpoint
         * Delete tag
     - Ingredients API
         * View list of ingredients
-        * Create ingredient
-            - Ingredient can be created when creating a recipe
-            - Ingredient can be created when updating a recipe
+        * Create ingredients
+            - Ingredients can be created when creating a recipe
+            - Ingredients can be created when updating a recipe
         * Update ingredient
-            - Ingredient can be updated when updating a recipe
+            - Ingredients can be updated when updating a recipe
             - Ingredient can be updated using the Ingredients API endpoint
         * Delete ingredient
 
