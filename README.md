@@ -419,6 +419,66 @@ urlpatterns = [
 ```
 - Rebuild the docker image
 
+#### Configure Static and Media Files
+- Add image handling dependencies (jpeg-dev, zlib zlib-dev) to Dockerfile
+-  Create static and media directories and set permissions
+```
+# ...
+RUN python -m venv /py && \
+    # ...
+    apk add --update --no-cache postgresql-client jpeg-dev && \
+    # ...
+        build-base postgresql-dev musl-dev zlib zlib-dev && \
+    # ...
+    adduser \
+        # ...
+        django-user && \
+    mkdir -p /vol/web/media && \
+    mkdir -p /vol/web/static && \
+    # set ownership of the directories to django-user
+    chown -R django-user:django-user /vol && \
+    # set permissions, so that the user can make any changes to the directories
+    chmod -R 755 /vol
+```
+- Add `Pillow` package to requirements.txt file
+- Add new volumes to docker-compose.yml file
+```
+# ...
+services:
+    app:
+        # ...
+        volumes:
+            - ./app:/app
+            - dev-static-data:/vol/web
+# ...
+volumes:
+    dev-db-data:
+    dev-static-data:
+```
+- Update settings.py file
+```
+STATIC_URL = '/static/static/'
+MEDIA_URL = '/static/media/'
+
+MEDIA_ROOT = '/vol/web/media'
+STATIC_ROOT = 'vol/web/static'
+```
+- Update urls.py file
+```
+from django.conf.urls.static import static
+from django.conf import settings
+# ...
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
+```
+
+- Rebuild the docker image
+
+
 ### Local Development
 Choose one of the following options:
 #### 1. [VSCode dev container](dev_container.md)
