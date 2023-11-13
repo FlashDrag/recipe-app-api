@@ -39,6 +39,11 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
         * Delete ingredient
     - Recipe Image API
         * Upload image to recipe
+- Filter recipes by tags and ingredients
+    - How to use:
+        - `<host>/api/recipes/?tags=<comma_separated_tag_ids>`
+        - `<host>/api/recipes/?ingredients=<comma_separated_ingredient_ids>`
+
 
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
