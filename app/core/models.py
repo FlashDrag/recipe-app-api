@@ -1,6 +1,9 @@
 """
 Database models
 """
+import uuid
+import os
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
@@ -8,6 +11,17 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin
 )
+
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new recipe image."""
+    # extract extension of the original filename
+    ext = os.path.splitext(filename)[1]
+    # create own filename by uuid and append the extension
+    filename = f'{uuid.uuid4()}{ext}'
+
+    # genrate the path
+    return os.path.join('uploads', 'recipe', filename)
 
 
 class UserManager(BaseUserManager):
