@@ -475,8 +475,8 @@ if settings.DEBUG:
         document_root=settings.MEDIA_ROOT,
     )
 ```
-
 - Rebuild the docker image
+- Add `recipe_image_file_path` function and `image` field to *models.py* file
 
 
 ### Local Development
