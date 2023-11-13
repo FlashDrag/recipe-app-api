@@ -37,6 +37,8 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
             - Ingredients can be updated when updating a recipe
             - Ingredient can be updated using the Ingredients API endpoint
         * Delete ingredient
+    - Recipe Image API
+        * Upload image to recipe
 
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
