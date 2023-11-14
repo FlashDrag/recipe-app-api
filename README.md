@@ -426,7 +426,7 @@ urlpatterns = [
 ```
 - Rebuild the docker image
 
-#### Configure Static and Media Files
+#### Configure Static and Media Files for Local Development
 - Add image handling dependencies (jpeg-dev, zlib zlib-dev) to Dockerfile
 -  Create static and media directories and set permissions
 ```
@@ -509,8 +509,7 @@ Since you've mounted your app codebase as a Docker volume you can develop your a
 - All development dependencies you can add to `requirements.dev.txt` file.
 - **Make sure the all dependencies including python version on your local machine match the dependencies in the container to avoid any issues.**
 
-
-## Production Environment Setup
+## GitHub Actions
 ### Docker Hub Configuration
 DockerHub is a platform that allows us to pull Docker images down to our local machine and push Docker images up to the cloud.
 
@@ -560,4 +559,54 @@ jobs:
         run: docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
       - name: Lint
         run: docker compose run --rm app sh -c "flake8"
+```
+
+## Deployment (AWS EC2)
+### Prerequisites
+- AWS account
+- AWS CLI
+- nginx.
+Web server that can be used as a reverse proxy to the Django app
+- uWSGI or Gunicorn.
+Web server gateway interface that can be used to serve the Django app
+- Docker Compose
+
+![project diagram](docs/project_diagram.jpg)
+
+### Project Configuration
+#### Add uWSGI to the project
+- Update Dockerfile.
+```
+COPY ./scripts /scripts
+COPY ./app /app
+
+RUN ...
+    # linux-headers - required for uWSGI
+    build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
+    # ...
+    chmod -R 755 /vol && \
+    # make the scripts dir executable
+    chmod -R +x /scripts
+
+# update PATH environment variable
+ENV PATH="/scripts:/py/bin:$PATH"
+# ...
+# run the script that will run the uWSGI server
+CMD ["run.sh"]
+```
+- Create `scripts` directory and add `run.sh` file
+```
+#!/bin/sh
+
+set -e
+
+python manage.py wait_for_db
+python manage.py collectstatic --noinput
+python manage.py migrate
+
+uwsgi --socket :9000 --workers 4 --master --enable-threads --module app.wsgi
+```
+- Add `uwsgi` package to requirements.txt file
+```
+uwsgi>=2.0.19<2.1
 ```
