@@ -110,7 +110,6 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
     $ docker compose up
     ```
 
-## Project Development
 ## Local Development Environment Setup (Ubuntu 22.04)
 ##### Prerequisites
 - Install Docker Engine
@@ -127,7 +126,7 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
     $ git clone git@github.com:FlashDrag/recipe-app-api.git <path_to_local_dir>
     ```
 
-### Project(Django) Setup
+### Django Setup
 - Create requirements.txt file and add the following:
     ```
     Django>=3.2.4,<3.3
@@ -268,7 +267,7 @@ services:
     $ docker compose up
     ```
 
-### Project(Database) Setup
+### Database Setup
 #### Configure Docker for PostgreSQL
 - Add PostgreSQL database to docker-compose.yml file
 ```bash
@@ -571,6 +570,7 @@ Web server that can be used as a reverse proxy to the Django app
 Web server gateway interface that can be used to serve the Django app
 - Docker Compose
 
+*Project diagram*
 ![project diagram](docs/project_diagram.jpg)
 
 ### Project Configuration
@@ -610,3 +610,83 @@ uwsgi --socket :9000 --workers 4 --master --enable-threads --module app.wsgi
 ```
 uwsgi>=2.0.19<2.1
 ```
+#### Proxy configuration
+- Create `proxy` directory
+- Add `default.conf.tpl` file
+```
+server {
+    listen ${LISTEN_PORT};
+
+    location /static {
+        alias /vol/static;
+    }
+
+    location / {
+        uwsgi_pass           ${APP_HOST}:${APP_PORT};
+        include              /etc/nginx/uwsgi_params;
+        client_max_body_size 10M;
+    }
+}
+```
+- Add `uwsgi_params` file
+
+https://uwsgi-docs.readthedocs.io/en/latest/Nginx.html#what-is-the-uwsgi-params-file
+```
+uwsgi_param QUERY_STRING $query_string;
+uwsgi_param REQUEST_METHOD $request_method;
+uwsgi_param CONTENT_TYPE $content_type;
+uwsgi_param CONTENT_LENGTH $content_length;
+uwsgi_param REQUEST_URI $request_uri;
+uwsgi_param PATH_INFO $document_uri;
+uwsgi_param DOCUMENT_ROOT $document_root;
+uwsgi_param SERVER_PROTOCOL $server_protocol;
+uwsgi_param REMOTE_ADDR $remote_addr;
+uwsgi_param REMOTE_PORT $remote_port;
+uwsgi_param SERVER_ADDR $server_addr;
+uwsgi_param SERVER_PORT $server_port;
+uwsgi_param SERVER_NAME $server_name;
+```
+- Add `run.sh` file
+```
+#!/bin/sh
+
+set -e
+
+envsubst < /etc/nginx/default.conf.tpl > /etc/nginx/conf.d/default.conf
+nginx -g 'daemon off;'
+```
+- Add Dockerfile to the `proxy` directory
+```
+# nginx image
+FROM nginxinc/nginx-unprivileged:1-alpine
+LABEL maintainer="linkedin.com/in/pavlo-myskov"
+
+# copy the files from local machine into docker image
+COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
+COPY ./uwsgi_params /etc/nginx/uwsgi_params
+COPY ./run.sh /run.sh
+
+# LISTEN_PORT - port that nginx will listen on
+ENV LISTEN_PORT=8000
+# APP_HOST - hostname where the uWSGI server is running
+ENV APP_HOST=app
+# APP_PORT - port where the uWSGI server is running
+ENV APP_PORT=9000
+
+# set root user to run the commands below as root
+USER root
+
+RUN mkdir -p /vol/static && \
+    chmod 755 /vol/static && \
+    touch /etc/nginx/conf.d/default.conf && \
+    chown nginx:nginx /etc/nginx/conf.d/default.conf && \
+    chmod +x /run.sh
+
+VOLUME /vol/static
+
+# switch to the nginx user
+USER nginx
+
+CMD ["/run.sh"]
+```
+
