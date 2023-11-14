@@ -253,6 +253,8 @@ services:
     # command to run when the container starts
     command: >
       sh -c 'python manage.py runserver 0.0.0.0:8000'
+    environment:
+      - DEBUG=1
 ```
 - Build the docker image
     ```bash
@@ -342,7 +344,6 @@ DATABASES = {
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
         'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
     }
 }
 ```
@@ -709,7 +710,6 @@ services:
             - DB_NAME=${DB_NAME}
             - DB_USER=${DB_USER}
             - DB_PASS=${DB_PASS}
-            - DB_PORT=${DB_PORT}
             - SECRET_KEY=${DJANGO_SECRET_KEY}
             - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
         depends_on:
@@ -737,4 +737,17 @@ services:
 volumes:
     postgres-data:
     static-data:
+```
+
+#### Update Django settings to use environment variables
+```
+SECRET_KEY = os.environ.get('SECRET_KEY', 'changeme')
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
+ALLOWED_HOSTS = []
+ALLOWED_HOSTS.extend(
+    filter(
+        None,
+        os.environ.get('ALLOWED_HOSTS', '').split(','),
+    )
+)
 ```

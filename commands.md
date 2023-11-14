@@ -43,6 +43,10 @@ $ docker volume ls
 ```bash
 $ docker volume rm <volume_name>
 ```
+- Down containers of specific docker-compose.yml file
+```bash
+$ docker compose -f <docker-compose-deploy.yml> down
+```
 
 ## Run commands inside the container
 - Using `docker compose run` command
