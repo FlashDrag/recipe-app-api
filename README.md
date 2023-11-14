@@ -346,7 +346,7 @@ DATABASES = {
     }
 }
 ```
-- Add database credentials to *.env* file. See the *.env.example* file for reference.
+- Add database credentials to *.env* file. See the See the [.env.example](.env.example) file for reference.
 - Rebuild the docker image
 ```bash
 $ docker compose up --build
@@ -690,3 +690,51 @@ USER nginx
 CMD ["/run.sh"]
 ```
 
+#### Handle configuration with environment variables
+- Add `.env` file to the project root directory. See the [.env.example](.env.example) file for reference.
+#### Docker Compose configuration for deployment
+- Add `docker-compose-deploy.yml` file in the project root directory
+```
+version: "3.9"
+
+services:
+    app:
+        build:
+            context: .
+        restart: always
+        volumes:
+            - static-data:/vol/web
+        environment:
+            - DB_HOST=db
+            - DB_NAME=${DB_NAME}
+            - DB_USER=${DB_USER}
+            - DB_PASS=${DB_PASS}
+            - DB_PORT=${DB_PORT}
+            - SECRET_KEY=${DJANGO_SECRET_KEY}
+            - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+        depends_on:
+            - db
+    db:
+        image: postgres:13-alpine
+        restart: always
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_DB=${DB_NAME}
+            - POSTGRES_USER=${DB_USER}
+            - POSTGRES_PASSWORD=${DB_PASS}
+    proxy:
+        build:
+            context: ./proxy
+        restart: always
+        depends_on:
+            - app
+        ports:
+            - 80:8000
+        volumes:
+            - static-data:/vol/static
+
+volumes:
+    postgres-data:
+    static-data:
+```
