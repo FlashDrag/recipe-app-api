@@ -184,17 +184,19 @@ ARG DEV=false
 # --disabled-password - disables the password for the user
 # --no-create-home - does not create a home directory for the user
 # --django-user - name of the user
+# chown -R django-user:django-user /app - changes the ownership of the /app directory to django-user
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
-    if [ "$DEV" = "true" ] ; \
+    if [ $DEV = "true" ] ; \
         then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
     fi && \
     rm -rf /tmp && \
     adduser \
         --disabled-password \
         --no-create-home \
-        django-user
+        django-user && \
+    chown -R django-user:django-user /app
 
 # update PATH environment variable to include the /py/bin directory
 # so that we can run python commands without specifying the full path
