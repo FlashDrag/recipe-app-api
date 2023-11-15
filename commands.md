@@ -1,40 +1,52 @@
 # Useful Commands
 - Start Docker Daemon
-    ```bash
-    $ sudo service docker start
-    ```
-- Build the docker image based on docker-compose.yml file
-    ```bash
-    $ docker compose build
-    ```
+```bash
+$ sudo service docker start
+```
 - Build the docker image based on Dockerfile
-    ```bash
-    $ docker build .
-    ```
+```bash
+$ docker build .
+```
+- Build the docker image based on docker-compose.yml file
+```bash
+$ docker compose build
+```
+- Build the docker image based on specific docker compose file
+```bash
+$ docker compose -f docker-compose-deploy.yml build
+```
 - Rebuild the docker image
-    ```bash
-    $ docker compose up --build
-    ```
+```bash
+$ docker compose up --build
+```
 - Run the docker containers based on docker-compose.yml file
-    ```bash
-    $ docker compose up
-    ```
+```bash
+$ docker compose up
+```
+- Run the docker containers based on specific docker compose file
+```bash
+$ docker compose -f docker-compose-deploy.yml up
+```
 - Check images
-    ```bash
-    $ docker images
-    ```
+```bash
+$ docker images
+```
 - Check files in the image
-    ```bash
-    $ docker run -it <image_id> sh
-    ```
+```bash
+$ docker run -it <image_id> sh
+```
 - Remove containers
-    ```bash
-    $ docker compose down
-    ```
+```bash
+$ docker compose down
+```
+- Remove containers of specific docker-compose.yml file
+```bash
+$ docker compose -f docker-compose-deploy.yml down
+```
 - Remove all images without at least one container associated to them
-    ```bash
-    $ docker image prune
-    ```
+```bash
+$ docker image prune
+```
 - View all volumes
 ```bash
 $ docker volume ls
@@ -43,9 +55,9 @@ $ docker volume ls
 ```bash
 $ docker volume rm <volume_name>
 ```
-- Down containers of specific docker-compose.yml file
+- Remove volumes of specific docker-compose.yml file
 ```bash
-$ docker compose -f <docker-compose-deploy.yml> down
+docker-compose -f docker-compose-deploy.yml down --volumes
 ```
 
 ## Run commands inside the container
