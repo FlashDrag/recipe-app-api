@@ -756,3 +756,150 @@ ALLOWED_HOSTS.extend(
     )
 )
 ```
+
+### AWS EC2 Configuration
+- Create IAM user
+    - Go to IAM > Users
+    - Create user:
+        - User name: `recipe-app-api-user`
+        - Uncheck `Programmatic access`
+        - Attach existing policies:
+            - AdministratorAccess
+        - Create user
+- Upload SSH key to AWS EC2
+    - Go to ~/.ssh directory on your local machine
+    - Generate new SSH key
+        ```bash
+        $ ssh-keygen -t rsa -b 4096
+        # Enter file in which to save the key.
+        $ /home/<user>/.ssh/aws_id_rsa
+        ```
+    - Get public key from local machine (you can use the existing one that used for GitHub SSH connection)
+        ```bash
+        $ cat ~/.ssh/aws_id_rsa.pub
+        ```
+    - Go to EC2 > Key Pairs
+    - Click Action > Import key pair:
+        - Key pair name: `recipe-api-wsl2-key`
+        - Paste public key from local machine
+        - Import key pair
+- Create EC2 instance
+    - Go to EC2 > Instances or EC2 Dashboard
+    - Click Launch Instance:
+        - Name: `recipe-api-dev-server`
+        - Number of instances: `1`
+        - Amazon Machine Image (AMI): `Amazon Linux 2 AMI`
+        - Instance type: `t2.micro` (Free tier eligible)
+        - Key pair login: `recipe-api-wsl2-key`
+        - Firewall:
+            - Check `Allow SSH traffic from Anywhere`
+            - Check `Allow HTTP traffic from the internet`
+        - Configure storage:
+            - 1 x 8 GiB gp2
+        - Launch instance
+- Connect to the EC2 instance using SSH from local machine
+    - Go to EC2 > Instances
+    - Select the instance
+    - Copy the Public IPv4 address
+    - Open the terminal on your local machine
+    - Start the SSH agent
+        ```bash
+        $ eval $(ssh-agent)
+        ```
+    - Add the SSH key to the SSH agent
+        ```bash
+        $ ssh-add ~/.ssh/aws_id_rsa
+        ```
+    - Connect to the EC2 instance
+        ```bash
+        $ ssh ec2-user@<public_ipv4_address>
+        ```
+- Connect EC2 to GitHub using SSH (on EC2 instance terminal)
+    - Generate new SSH key
+        ```bash
+        $ ssh-keygen -t ed25519 -b 4096
+        # Leave the file name and passphrase empty
+        ```
+    - Get public key
+        ```bash
+        $ cat ~/.ssh/id_ed25519.pub
+        ```
+    - Go to GitHub repository > Settings > Deploy keys
+    - Add deploy key:
+        - Title: `server`
+        - Key: Paste generated public key from EC2 instance
+        - Allow write access: `uncheck`
+        - Add key
+- Configure Amazon Linux 2023 EC2 instance (make sure you're connected to the EC2 instance)
+    - Update the system
+        ```bash
+        $ sudo dnf update -y
+        ```
+    - Install git
+        ```bash
+        $ sudo dnf install git -y
+        ```
+    - Install Docker
+
+    https://linux.how2shout.com/how-to-install-docker-on-amazon-linux-2023/
+    https://cloudkatha.com/how-to-install-docker-on-amazon-linux-2023/
+        ```bash
+        $ sudo dnf install docker -y
+        ```
+    - Enable and start Docker service
+        ```bash
+        # allows to automatically start Docker service on system boot
+        $ sudo systemctl enable docker
+        # sudo systemctl start docker
+        ```
+    - Verify Docker Running Status
+        ```bash
+        $ sudo systemctl status docker
+        ```
+    - Add ec2-user to the docker group
+        ```bash
+        # gives the ec2-user permission to run Docker commands
+        $ sudo usermod -a -G docker ec2-user
+        ```
+    - Relogin to the EC2 instance
+        ```bash
+        $ exit
+        $ ssh ec2-user@<public_ipv4_address>
+        ```
+    - Install Docker Compose
+        ```bash
+        $ sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+        ```
+    - Apply executable permissions to the binary
+        ```bash
+        # makes the docker-compose binary executable
+        $ sudo chmod +x /usr/local/bin/docker-compose
+        ```
+- Clone and configure the project
+    - Copy the SSH clone URL from GitHub repository
+    - Clone the project
+        ```bash
+        $ git clone git@github.com:FlashDrag/recipe-app-api.git
+        ```
+    - Create `.env` file from `.env.example` file
+        ```bash
+        $ cp .env.example .env
+        ```
+    - Update `.env` file
+        ```bash
+        $ nano .env
+        # ---
+        DB_NAME=recipedb
+        DB_USER=recipeuser
+        DB_PASS=set_your_password
+        DJANGO_SECRET_KEY=changeme
+        DJANGO_ALLOWED_HOSTS=public_ipv4_addres
+        ```
+        - To generate a new secret key see the [Generate Django Secret Key](commands.md#generate-django-secret-key) section.
+        - To get the Public IPv4 address of the EC2 instance go to `EC2 > Instance > Networking > Public IPv4 DNS`
+- Run services
+```bash
+# -d flag allows to run the containers in the background, so that we can see the output of the containers
+$ docker-compose -f docker-compose-deploy.yml up -d
+```
+- Open the browser and go to the **Public IPv4 DNS** address of the EC2 instance

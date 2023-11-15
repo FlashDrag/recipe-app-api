@@ -95,3 +95,14 @@ docker-compose -f docker-compose-deploy.yml down --volumes
 
         $ drun "python manage.py test"  # e.g.
         ```
+
+## Generate Django Secret Key
+- Open a shell terminal inside the container
+    ```bash
+    $ docker compose run --rm app sh -c "python manage.py shell"
+    ```
+- Generate secret key
+    ```python
+    >>> from django.core.management.utils import get_random_secret_key
+    >>> get_random_secret_key()
+    ```
