@@ -1,5 +1,5 @@
 # Recipe API
-[![Tests](https://img.shields.io/github/actions/workflow/status/FlashDrag/recipe-app-api/checks.yml?branch=master&label=Tests&logo=github&style=flat-square)](https://github.com/FlashDrag/recipe-app-api/actions) [![Swagger UI](https://img.shields.io/badge/Swagger%20UI-Documentation-orange?style=flat-square&logo=swagger)](http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/FlashDrag/recipe-app-api/checks.yml?branch=master&label=CI&logo=github&style=flat-square)](https://github.com/FlashDrag/recipe-app-api/actions) [![Swagger UI](https://img.shields.io/badge/Swagger%20UI-Documentation-orange?style=flat-square&logo=swagger)](http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs)
 
 <!-- [![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployment-blue?style=flat-square&logo=amazon-aws)](http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs) -->
 

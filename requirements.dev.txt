@@ -1,2 +1,2 @@
-flake8>=3.9.2,<3.10
-pycodestyle
+flake8>=6.1.0,<6.2
+pycodestyle>=2.11.1,<2.12
