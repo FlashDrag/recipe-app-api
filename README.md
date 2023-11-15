@@ -967,10 +967,6 @@ ALLOWED_HOSTS.extend(
 # -d flag allows to run the containers in the background, so that we can see the output of the containers
 $ docker-compose -f docker-compose-deploy.yml up -d
 ```
-- Rebuild and run services (if you've made any changes to the project)
-```bash
-$ docker-compose -f docker-compose-deploy.yml up -d --build
-```
 - Open the browser and go to the **Public IPv4 DNS** address of the EC2 instance
 
 [Back to top ↑](#recipe-api)

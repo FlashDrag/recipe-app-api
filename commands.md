@@ -1,4 +1,40 @@
 # Useful Commands
+## EC2 Instance
+- Connect to the EC2 instance
+```bash
+$ ssh ec2-user@<public_ipv4_address>
+```
+- Build the docker image based on specific docker compose file
+```bash
+$ docker-compose -f docker-compose-deploy.yml build
+```
+- Run the docker containers based on specific docker compose file
+```bash
+$ docker-compose -f docker-compose-deploy.yml up
+```
+- Rebuild and run the docker containers based on specific docker compose file
+```bash
+$ docker-compose -f docker-compose-deploy.yml up --build
+```
+- Rebuid the specific service based on the specific docker compose file if you made changes to project files and pulled them from GitHub
+```bash
+$ docker-compose -f docker-compose-deploy.yml build <service_name>
+```
+- Restart the specific service based on the specific docker compose file after you rebuid it
+```bash
+$ docker-compose -f docker-compose-deploy.yml up --no-deps -d <service_name>
+# --no-deps - don't restart dependent services (ngix, postgres) since we only want to restart the service we rebuid
+```
+- Remove volumes of specific docker-compose.yml file
+```bash
+$ docker-compose -f docker-compose-deploy.yml down --volumes
+```
+- Check logs of the container on production
+```bash
+$ docker-compose -f docker-compose-deploy.yml logs
+```
+
+## Docker
 - Start Docker Daemon
 ```bash
 $ sudo service docker start
@@ -11,25 +47,13 @@ $ docker build .
 ```bash
 $ docker compose build
 ```
-- Build the docker image based on specific docker compose file
-```bash
-$ docker compose -f docker-compose-deploy.yml build
-```
-- Rebuild the docker image
+- Rebuild the docker images
 ```bash
 $ docker compose up --build
 ```
 - Run the docker containers based on docker-compose.yml file
 ```bash
 $ docker compose up
-```
-- Run the docker containers based on specific docker compose file
-```bash
-$ docker compose -f docker-compose-deploy.yml up
-```
-- Rebuild and run the docker containers based on specific docker compose file
-```bash
-$ docker compose -f docker-compose-deploy.yml up --build
 ```
 - Check images
 ```bash
@@ -58,14 +82,6 @@ $ docker volume ls
 - Remove volumes
 ```bash
 $ docker volume rm <volume_name>
-```
-- Remove volumes of specific docker-compose.yml file
-```bash
-$ docker-compose -f docker-compose-deploy.yml down --volumes
-```
-- Check logs of the container on production
-```bash
-$ docker-compose -f docker-compose-deploy.yml logs
 ```
 
 ## Run commands inside the container
