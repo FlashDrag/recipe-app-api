@@ -1,5 +1,9 @@
 # Recipe API
-REST API for managing recipes built with Python, Django REST Framework and Docker using Test Driven Development (TDD).
+[![Tests](https://img.shields.io/github/actions/workflow/status/FlashDrag/recipe-app-api/checks.yml?branch=master&label=Tests&logo=github&style=flat-square)](https://github.com/FlashDrag/recipe-app-api/actions) [![Swagger UI](https://img.shields.io/badge/Swagger%20UI-Documentation-orange?style=flat-square&logo=swagger)](http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs)
+
+<!-- [![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployment-blue?style=flat-square&logo=amazon-aws)](http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs) -->
+
+REST API for managing recipes. Built with Python, Django REST Framework and Docker using Test Driven Development (TDD). Deployed on AWS EC2.
 
 http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs
 
@@ -900,17 +904,18 @@ ALLOWED_HOSTS.extend(
         $ sudo dnf install git -y
         ```
     - Install Docker
-
-    https://linux.how2shout.com/how-to-install-docker-on-amazon-linux-2023/
-    https://cloudkatha.com/how-to-install-docker-on-amazon-linux-2023/
         ```bash
         $ sudo dnf install docker -y
         ```
+    https://linux.how2shout.com/how-to-install-docker-on-amazon-linux-2023/
+
+    https://cloudkatha.com/how-to-install-docker-on-amazon-linux-2023/
+
     - Enable and start Docker service
         ```bash
         # allows to automatically start Docker service on system boot
         $ sudo systemctl enable docker
-        # sudo systemctl start docker
+        $ sudo systemctl start docker
         ```
     - Verify Docker Running Status
         ```bash
