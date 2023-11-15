@@ -27,6 +27,10 @@ $ docker compose up
 ```bash
 $ docker compose -f docker-compose-deploy.yml up
 ```
+- Rebuild and run the docker containers based on specific docker compose file
+```bash
+$ docker compose -f docker-compose-deploy.yml up --build
+```
 - Check images
 ```bash
 $ docker images
@@ -57,7 +61,11 @@ $ docker volume rm <volume_name>
 ```
 - Remove volumes of specific docker-compose.yml file
 ```bash
-docker-compose -f docker-compose-deploy.yml down --volumes
+$ docker-compose -f docker-compose-deploy.yml down --volumes
+```
+- Check logs of the container on production
+```bash
+$ docker-compose -f docker-compose-deploy.yml logs
 ```
 
 ## Run commands inside the container
@@ -69,6 +77,10 @@ docker-compose -f docker-compose-deploy.yml down --volumes
     # --rm - removes the container after finish running
     # app - name of the service in docker-compose.yml file
     # sh -c - shell command
+    ```
+- Using specific docker-compose.yml file
+    ```bash
+    $ docker compose -f docker-compose-deploy.yml run --rm app sh -c "<django-command>"
     ```
 
 - Open a shell terminal inside the container. Allows to run commands directly inside the container.
@@ -106,3 +118,7 @@ docker-compose -f docker-compose-deploy.yml down --volumes
     >>> from django.core.management.utils import get_random_secret_key
     >>> get_random_secret_key()
     ```
+
+[Back to top ↑](#useful-commands)
+
+[Back to README.md](README.md)

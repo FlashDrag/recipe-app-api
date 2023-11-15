@@ -1,6 +1,43 @@
 # Recipe API
-REST API with Python, Django REST Framework and Docker using Test Driven Development (TDD)
+REST API for managing recipes built with Python, Django REST Framework and Docker using Test Driven Development (TDD).
 
+http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs
+
+## Table of Contents
+- [Features](#features)
+- [Documentation](#documentation)
+    - [User authentication with Token](#user-authentication-with-token)
+    - [Swagger UI](#swagger-ui)
+    - [Frontend App](#frontend-app)
+- [Entity-Relationship Diagram](#entity-relationship-diagram)
+- [Technologies Used](#technologies-used)
+- [Local Usage](#local-usage)
+- [Local Development Environment Setup (Ubuntu 22.04)](#local-development-environment-setup-ubuntu-2204)
+    - [Prerequisites](#prerequisites)
+    - [Django Setup](#django-setup)
+    - [Database Setup](#database-setup)
+        - [Configure Docker for PostgreSQL](#configure-docker-for-postgresql)
+        - [Configure Django to use PostgreSQL](#configure-django-to-use-postgresql)
+            - [Setup `wait_for_db` custom management command](#setup-wait_for_db-custom-management-command)
+        - [Create a Custom User Model](#create-a-custom-user-model)
+        - [Configure DRF to use drf_spectacular](#configure-drf-to-use-drf_spectacular)
+        - [Configure Static and Media Files for Local Development](#configure-static-and-media-files-for-local-development)
+    - [Local Development](#local-development)
+        - [1. VSCode dev container](#1-vscode-dev-container)
+        - [2. Local virtual environment](#2-local-virtual-environment)
+- [GitHub Actions](#github-actions)
+    - [Docker Hub Configuration](#docker-hub-configuration)
+    - [GitHub Actions Configuration](#github-actions-configuration)
+- [Deployment (AWS EC2)](#deployment-aws-ec2)
+    - [Prerequisites](#prerequisites-1)
+    - [Project Configuration](#project-configuration)
+        - [Add uWSGI to the project](#add-uwsgi-to-the-project)
+        - [Proxy configuration](#proxy-configuration)
+        - [Handle configuration with environment variables](#handle-configuration-with-environment-variables)
+        - [Docker Compose configuration for deployment](#docker-compose-configuration-for-deployment)
+        - [Update Django settings to use environment variables](#update-django-settings-to-use-environment-variables)
+    - [AWS EC2 Configuration](#aws-ec2-configuration)
+- [Useful Commands](commands.md)
 
 ## Features
 - Django UI admin panel
@@ -45,6 +82,8 @@ REST API with Python, Django REST Framework and Docker using Test Driven Develop
         - `<host>/api/recipes/?ingredients=<comma_separated_ingredient_ids>`
 
 
+[Back to top ↑](#recipe-api)
+
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
 - Swagger UI: `<host>/api/docs/`
@@ -68,6 +107,8 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
     - Save the token in the local storage
     - Add the `Authorization: Token <token>` header to the request every time you make a request to the API
 
+[Back to top ↑](#recipe-api)
+
 ## Entity-Relationship Diagram
 ![ERD](docs/erd.png)
 
@@ -85,16 +126,25 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) - OpenAPI schema generation for Django REST framework
 
 ### Tools
+#### Development
 - [VS Code](https://code.visualstudio.com/) - IDE
-- [PIP](https://pypi.org/project/pip/) - Python package manager
 
+#### Version Control
 - [Git](https://git-scm.com/) - Version control system
 - [GitHub](https://github.com/) - Version control system hosting service
 
+#### Containerization
 - [Docker](https://www.docker.com/) - Containerization platform
 - [Docker Compose](https://docs.docker.com/compose/) - Tool for defining and running multi-container Docker applications
 - [Docker Hub](https://hub.docker.com/) - Container image registry
 
+#### Deployment
+- [AWS EC2](https://aws.amazon.com/ec2/) - Virtual machine service
+- [nginx](https://www.nginx.com/) - Web server
+- [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/) - Web server gateway interface
+
+
+[Back to top ↑](#recipe-api)
 
 ## Local Usage
 - Clone the GitHub repository
@@ -270,6 +320,8 @@ services:
     ```bash
     $ docker compose up
     ```
+
+[Back to top ↑](#recipe-api)
 
 ### Database Setup
 #### Configure Docker for PostgreSQL
@@ -470,7 +522,7 @@ STATIC_URL = '/static/static/'
 MEDIA_URL = '/static/media/'
 
 MEDIA_ROOT = '/vol/web/media'
-STATIC_ROOT = 'vol/web/static'
+STATIC_ROOT = '/vol/web/static'
 ```
 - Update urls.py file
 ```
@@ -487,6 +539,8 @@ if settings.DEBUG:
 - Rebuild the docker image
 - Add `recipe_image_file_path` function and `image` field to *models.py* file
 
+
+[Back to top ↑](#recipe-api)
 
 ### Local Development
 Choose one of the following options:
@@ -510,6 +564,8 @@ Since you've mounted your app codebase as a Docker volume you can develop your a
     ```
 - All development dependencies you can add to `requirements.dev.txt` file.
 - **Make sure the all dependencies including python version on your local machine match the dependencies in the container to avoid any issues.**
+
+[Back to top ↑](#recipe-api)
 
 ## GitHub Actions
 ### Docker Hub Configuration
@@ -562,6 +618,8 @@ jobs:
       - name: Lint
         run: docker compose run --rm app sh -c "flake8"
 ```
+
+[Back to top ↑](#recipe-api)
 
 ## Deployment (AWS EC2)
 ### Prerequisites
@@ -625,9 +683,9 @@ server {
     }
 
     location / {
-        uwsgi_pass           ${APP_HOST}:${APP_PORT};
-        include              /etc/nginx/uwsgi_params;
-        client_max_body_size 10M;
+        uwsgi_pass              ${APP_HOST}:${APP_PORT};
+        include                 /etc/nginx/uwsgi_params;
+        client_max_body_size    10M;
     }
 }
 ```
@@ -756,6 +814,8 @@ ALLOWED_HOSTS.extend(
     )
 )
 ```
+
+[Back to top ↑](#recipe-api)
 
 ### AWS EC2 Configuration
 - Create IAM user
@@ -902,4 +962,12 @@ ALLOWED_HOSTS.extend(
 # -d flag allows to run the containers in the background, so that we can see the output of the containers
 $ docker-compose -f docker-compose-deploy.yml up -d
 ```
+- Rebuild and run services (if you've made any changes to the project)
+```bash
+$ docker-compose -f docker-compose-deploy.yml up -d --build
+```
 - Open the browser and go to the **Public IPv4 DNS** address of the EC2 instance
+
+[Back to top ↑](#recipe-api)
+
+[Useful Commands](commands.md)
