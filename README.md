@@ -733,6 +733,9 @@ services:
             - app
         ports:
             - 80:8000
+
+            # use the following port mapping for docker-compose-deploy.yml file local testing
+            # - 8000:8000
         volumes:
             - static-data:/vol/static
 
