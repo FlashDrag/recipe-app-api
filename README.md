@@ -5,6 +5,8 @@
 
 REST API for managing recipes. Built with Python, Django REST Framework and Docker using Test Driven Development (TDD). Deployed on AWS EC2.
 
+_AWS EC2 Instance is temporarily stopped to save costs._
+
 http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs
 
 ## Table of Contents
@@ -90,9 +92,9 @@ http://ec2-34-254-224-163.eu-west-1.compute.amazonaws.com/api/docs
 
 ## Documentation
 The API documentation is created using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/).
-- Swagger UI: `<host>/api/docs/`
-- ReDoc: `<host>/api/redoc/`
-- OpenAPI schema: `<host>/api/schema/`
+- Swagger UI: `/api/docs/`
+- ReDoc: `/api/redoc/`
+- OpenAPI schema: `/api/schema/`
 
 #### User authentication with Token
 - Create new user or use existing one
@@ -946,8 +948,9 @@ ALLOWED_HOSTS.extend(
         ```bash
         $ git clone git@github.com:FlashDrag/recipe-app-api.git
         ```
-    - Create `.env` file from `.env.example` file
+    - Create `.env` file from `.env.example` file from the project root directory
         ```bash
+        $ cd recipe-app-api
         $ cp .env.example .env
         ```
     - Update `.env` file
@@ -958,16 +961,55 @@ ALLOWED_HOSTS.extend(
         DB_USER=recipeuser
         DB_PASS=set_your_password
         DJANGO_SECRET_KEY=changeme
-        DJANGO_ALLOWED_HOSTS=public_ipv4_addres
+        DJANGO_ALLOWED_HOSTS=public_ipv4_address
         ```
         - To generate a new secret key see the [Generate Django Secret Key](commands.md#generate-django-secret-key) section.
-        - To get the Public IPv4 address of the EC2 instance go to `EC2 > Instance > Networking > Public IPv4 DNS`
+        - To get the Public IPv4 DNS of the EC2 instance go to `EC2 > Instance > Networking > Public IPv4 DNS`
 - Run services
 ```bash
 # -d flag allows to run the containers in the background, so that we can see the output of the containers
+$ cd recipe-app-api
 $ docker-compose -f docker-compose-deploy.yml up -d
 ```
-- Open the browser and go to the **Public IPv4 DNS** address of the EC2 instance
+- Open the browser and go to the **Public IPv4 DNS** address of the EC2 instance. Make sure that the **HTTP** protocol is used in the address bar.
+
+#### Reboot EC2 instance
+
+*Note*: If you reboot the EC2 instance, you need to change allowed hosts and recreate the containers, since the ip addresses of the EC2 instance will change after rebooting.
+
+- Connect to the EC2 instance using SSH from local machine
+    - Go to EC2 > Instances
+    - Select the instance
+    - Copy the Public IPv4 address
+    - Open the terminal on your local machine
+    - Start the SSH agent
+        ```bash
+        $ eval $(ssh-agent)
+        ```
+    - Add the SSH key to the SSH agent
+        ```bash
+        $ ssh-add ~/.ssh/aws_id_rsa
+        ```
+    - Connect to the EC2 instance
+        ```bash
+        $ ssh ec2-user@<public_ipv4_address>
+        ```
+- Verify Docker Running Status
+    ```bash
+    $ sudo systemctl status docker
+    ```
+- Change allowed hosts in `.env` file to the new Public IPv4 DNS address
+    ```bash
+    $ cd recipe-app-api
+    $ nano .env
+    # ---
+    DJANGO_ALLOWED_HOSTS=new_public_ipv4_address
+    ```
+- Re-run the containers
+    ```bash
+    $ docker-compose -f docker-compose-deploy.yml up -d
+    ```
+- Open the browser and go to the new **Public IPv4 DNS** address of the EC2 instance. Make sure that the **HTTP** protocol is used in the address bar.
 
 [Back to top ↑](#recipe-api)
 
