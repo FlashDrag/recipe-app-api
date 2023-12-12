@@ -96,6 +96,9 @@ The API documentation is created using [drf-spectacular](https://drf-spectacular
 - ReDoc: `/api/redoc/`
 - OpenAPI schema: `/api/schema/`
 
+_Swagger UI_
+![Swagger UI](docs/swagger-ui.png)
+
 #### User authentication with Token
 - Create new user or use existing one
 - To get a token, send a `POST` request to `<host>/api/user/token/` with the following payload:
